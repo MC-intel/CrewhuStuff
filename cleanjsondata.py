@@ -83,6 +83,10 @@ def detect_base_dir() -> Path:
     if env_dir:
         return Path(env_dir).expanduser().resolve()
 
+    # Colab/IPython environments don't set __file__ and usually work from CWD
+    if "google.colab" in sys.modules or "ipykernel" in sys.modules:
+        return Path.cwd().resolve()
+
     script_path = None
 
     # Prefer the file location when available (normal script execution)
