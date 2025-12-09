@@ -79,7 +79,14 @@ TICKET_ID_PATTERN = re.compile(r"ticket#\s*(\d+)", re.IGNORECASE)
 # ---------------------------------------------------------
 def detect_base_dir() -> Path:
     env_dir = os.environ.get("CREWHU_DATA_DIR")
-    return Path(env_dir).expanduser().resolve() if env_dir else Path(__file__).parent.resolve()
+    if env_dir:
+        return Path(env_dir).expanduser().resolve()
+
+    try:
+        return Path(__file__).parent.resolve()
+    except NameError:
+        # __file__ is not defined in some interactive environments (e.g., Colab)
+        return Path.cwd()
 
 
 def coalesce(*values: Optional[str], default: str = "") -> str:
