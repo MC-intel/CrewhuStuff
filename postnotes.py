@@ -1,6 +1,7 @@
 import json
 import base64
 import os
+import sys
 import requests
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,11 +19,23 @@ def detect_base_dir() -> Path:
     if env_dir:
         return Path(env_dir).expanduser().resolve()
 
-    try:
-        return Path(__file__).parent.resolve()
-    except NameError:
-        # __file__ is not defined in some interactive environments (e.g., Colab)
-        return Path.cwd()
+    script_path = None
+
+    # Prefer the file location when available (normal script execution)
+    if "__file__" in globals():
+        script_path = Path(__file__)
+    elif sys.argv and sys.argv[0]:
+        # Fallback to the invoked script path when __file__ is missing (e.g., notebooks)
+        script_path = Path(sys.argv[0]).expanduser()
+
+    if script_path:
+        try:
+            return script_path.parent.resolve()
+        except OSError:
+            pass
+
+    # Final fallback to current working directory for fully interactive sessions
+    return Path.cwd()
 
 
 BASE_DIR = detect_base_dir()
