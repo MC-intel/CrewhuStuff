@@ -13,7 +13,19 @@ DRY_RUN = True   # Set to False to actually post notes
 # ==============================
 # CONFIG – FILES
 # ==============================
-BASE_DIR = Path(os.environ.get("CREWHU_DATA_DIR", Path(__file__).parent)).expanduser().resolve()
+def detect_base_dir() -> Path:
+    env_dir = os.environ.get("CREWHU_DATA_DIR")
+    if env_dir:
+        return Path(env_dir).expanduser().resolve()
+
+    try:
+        return Path(__file__).parent.resolve()
+    except NameError:
+        # __file__ is not defined in some interactive environments (e.g., Colab)
+        return Path.cwd()
+
+
+BASE_DIR = detect_base_dir()
 PARSED_JSON = Path(os.environ.get("CREWHU_SURVEY_FILE", BASE_DIR / "crewhu_surveys_clean.json"))
 
 # ==============================
