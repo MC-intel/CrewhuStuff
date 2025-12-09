@@ -1,5 +1,6 @@
 import csv
 import json
+import os
 import re
 import base64
 import requests
@@ -8,8 +9,9 @@ from pathlib import Path
 # ==========
 # CONFIG
 # ==========
-CSV_FILE = Path("/content/Lost Surveys(Survey History (5)).csv")
-JSON_FILE = Path("crewhu_notifications_NEW.json")
+BASE_DIR = Path(os.environ.get("CREWHU_DATA_DIR", Path(__file__).parent)).expanduser().resolve()
+CSV_FILE = Path(os.environ.get("CREWHU_CSV_FILE", BASE_DIR / "Lost Surveys(Survey History (5)).csv"))
+JSON_FILE = Path(os.environ.get("CREWHU_NOTIFICATIONS_FILE", BASE_DIR / "crewhu_notifications_NEW.json"))
 
 DRY_RUN = True   # ← Set False to actually update ConnectWise
 

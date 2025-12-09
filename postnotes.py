@@ -1,5 +1,6 @@
 import json
 import base64
+import os
 import requests
 from datetime import datetime, timezone
 from pathlib import Path
@@ -7,12 +8,13 @@ from pathlib import Path
 # ==============================
 # CONFIG – DRY RUN
 # ==============================
-DRY_RUN = False   # ←← SET TO False TO ACTUALLY POST NOTES
+DRY_RUN = True   # Set to False to actually post notes
 
 # ==============================
 # CONFIG – FILES
 # ==============================
-PARSED_JSON = Path("/content/crewhu_notifications_clean.json")
+BASE_DIR = Path(os.environ.get("CREWHU_DATA_DIR", Path(__file__).parent)).expanduser().resolve()
+PARSED_JSON = Path(os.environ.get("CREWHU_SURVEY_FILE", BASE_DIR / "crewhu_surveys_clean.json"))
 
 # ==============================
 # CONFIG – CONNECTWISE CREDS
