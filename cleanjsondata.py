@@ -241,7 +241,12 @@ def parse_args() -> argparse.Namespace:
         default=base_dir / "crewhu_surveys_clean.json",
         help="Where to write the parsed survey summaries.",
     )
-    return parser.parse_args()
+    args, unknown = parser.parse_known_args()
+
+    if unknown:
+        print(f"Ignoring unexpected arguments: {' '.join(unknown)}")
+
+    return args
 
 
 def main() -> None:
